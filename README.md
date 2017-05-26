@@ -1,4 +1,4 @@
-<h1>TensorFlow Own Dataset</h1>
+<h1>CNN Own Dataset</h1>
 
 <h2>dataset\</h2>
 <p>This directory will organize automatically.</p>
