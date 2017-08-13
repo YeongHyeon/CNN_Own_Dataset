@@ -1,5 +1,5 @@
 print("\n***** Load modules *****")
-import os, inspect
+import os, inspect, argparse
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import math
 import numpy as np
@@ -32,7 +32,7 @@ def request_dataset(path):
 
     print("\n***** Load dataset *****")
 
-    dataset, classes = dataset_loader.load_dataset(path=PACK_PATH+"/images", img_h=28, img_w=28)
+    dataset, classes = dataset_loader.load_dataset(path=PACK_PATH+"/images", img_h=FLAGS.height, img_w=FLAGS.width)
 
     num_train = dataset.train.amount
     num_test = dataset.test.amount
@@ -106,58 +106,72 @@ def conv_neural_network(x, y_, height=28, width=28, dimension=1, classes=None):
     return keep_prob, train_step, accuracy
 
 #============================================================================
+def main():
+    dataset, classes, min_b = request_dataset(path="images/")
+    # Separate composition and execute
+    sess = tf.InteractiveSession()
 
-dataset, classes, min_b = request_dataset(path="images/")
-# Separate composition and execute
-sess = tf.InteractiveSession()
+    # Initialize placeholdersshape[0]
+    # x is image, y_ is label
+    #x = tf.placeholder(tf.float32, shape=[None, img_length])
+    #y_ = tf.placeholder(tf.float32, shape=[None, classes])
+    height, width, dimension = dataset.train.shape
+    x = tf.placeholder(tf.float32, shape=[None, height, width, dimension])
+    y_ = tf.placeholder(tf.float32, shape=[None, classes])
 
-# Initialize placeholdersshape[0]
-# x is image, y_ is label
-#x = tf.placeholder(tf.float32, shape=[None, img_length])
-#y_ = tf.placeholder(tf.float32, shape=[None, classes])
-height, width, dimension = dataset.train.shape
-x = tf.placeholder(tf.float32, shape=[None, height, width, dimension])
-y_ = tf.placeholder(tf.float32, shape=[None, classes])
+    keep_prob, train_step, accuracy = conv_neural_network(x, y_, height=height, width=width, dimension=dimension, classes=classes)
 
-keep_prob, train_step, accuracy = conv_neural_network(x, y_, height=height, width=width, dimension=dimension, classes=classes)
+    print("\n***** Training with CNN *****")
+    sess.run(tf.global_variables_initializer())
+    print(" Initialized all variables")
 
-print("\n***** Training with CNN *****")
-sess.run(tf.global_variables_initializer())
-print(" Initialized all variables")
+    #Create a saver object which will save all the variables
+    saver = tf.train.Saver()
 
-#Create a saver object which will save all the variables
-saver = tf.train.Saver()
+    batch_size = FLAGS.batch
+    if(batch_size > min_b):
+        batch_size = min_b
 
-batch_size = 10
-if(min_b < batch_size):
-    batch_size = min_b
-epochs = 1000
-epoch_step = epochs/10
-train_acc_list = []
-test_acc_list = []
-print("\n Training... epochs: %d, batch size: %d\n" %(epochs, batch_size))
+    epochs=FLAGS.epochs
+    epoch_step = 10
+    if(epochs <= 10):
+        epoch_step = 1
 
-for i in range(epochs):
-    # dataset.train.next_batch returns images, labels
-    train = dataset.train.next_batch(batch_size)
-    if i%epoch_step == 0:
-        test = dataset.test.next_batch(batch_size)
+    train_acc_list = []
+    test_acc_list = []
+    print("\n Training... epochs: %d, batch size: %d\n" %(epochs, batch_size))
 
-        train_accuracy = accuracy.eval(feed_dict={x:train[0], y_:train[1], keep_prob: 1.0})
-        test_accuracy = accuracy.eval(feed_dict={x:test[0], y_:test[1], keep_prob: 1.0})
-        train_acc_list.append(train_accuracy)
-        test_acc_list.append(test_accuracy)
-        print(" Step %d\n\ttrain acc, test acc | %.5f, %.5f\r" %(i, train_accuracy, test_accuracy))
-    train_step.run(feed_dict={x:train[0], y_:train[1], keep_prob: 0.5}) # dropout 50%
+    for i in range(epochs):
+        # dataset.train.next_batch returns images, labels
+        train = dataset.train.next_batch(batch_size)
+        if i%epoch_step == 0:
+            test = dataset.test.next_batch(batch_size)
 
-test = dataset.test.next_batch(batch_size)
-print("\n Final Test accuracy %g"%accuracy.eval(feed_dict={x:test[0], y_:test[1], keep_prob: 1.0}))
+            train_accuracy = accuracy.eval(feed_dict={x:train[0], y_:train[1], keep_prob: 1.0})
+            test_accuracy = accuracy.eval(feed_dict={x:test[0], y_:test[1], keep_prob: 1.0})
+            train_acc_list.append(train_accuracy)
+            test_acc_list.append(test_accuracy)
+            print(" Step %d\n\ttrain acc, test acc | %.5f, %.5f\r" %(i, train_accuracy, test_accuracy))
+        train_step.run(feed_dict={x:train[0], y_:train[1], keep_prob: 0.5}) # dropout 50%
 
-if(not(os.path.exists("./checkpoint"))):
-    os.mkdir("./checkpoint")
-else:
-    pass
-saver.save(sess, "./checkpoint/checkpoint",global_step=1000)
+    test = dataset.test.next_batch(batch_size)
+    print("\n Final Test accuracy %g"%accuracy.eval(feed_dict={x:test[0], y_:test[1], keep_prob: 1.0}))
 
-utility.show_graph(train_acc_list, test_acc_list)
-utility.save_graph_as_image(train_acc_list, test_acc_list)
+    if(not(os.path.exists("./checkpoint"))):
+        os.mkdir("./checkpoint")
+    else:
+        pass
+    saver.save(sess, "./checkpoint/checkpoint",global_step=1000)
+
+    utility.show_graph(train_acc_list, test_acc_list)
+    utility.save_graph_as_image(train_acc_list, test_acc_list)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--epochs', type=int, default=100, help='Default: 100')
+    parser.add_argument('--batch', type=int, default=10, help='Default: 10. Batches per iteration, the number of data to be training and testing.')
+    parser.add_argument('--height', type=float, default=1, help='Default: 28. Enter the size to resize images what you want')
+    parser.add_argument('--width', type=float, default=1, help='Default: 28. Enter the size to resize images what you want')
+    FLAGS, unparsed = parser.parse_known_args()
+
+    main()
