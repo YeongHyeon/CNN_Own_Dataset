@@ -1,8 +1,10 @@
 <h1>CNN Own Dataset</h1>
 
 <h2>images\</h2>
-<p>Put your own Image datas in this directory.</p>
-<p>0: class0, 1: class1 ....</p>
+<p>
+Put your own Image datas in this directory.</br>
+class0, class1 ....
+</p>
 
 <h2>train\ & test\ & valid</h2>
 <p>This directories are organize for dataset.</p>
