@@ -1,11 +1,5 @@
 <h1>CNN Own Dataset</h1>
 
-Developed by...</br>
-  _ _ __ __  _ _ ____   _  _ _ _ __ __  _ _       </br>
- | | | _|   \ \ |  __| | || | | | _|   \ \ |      </br>
- |  / _| () |   | |_ | |    |  / _| () |   |  _   </br>
-|__/____|__ /_|_|____| |_||_/_/____|__ /_|_| (_)  </br>
-
 <h2>images\</h2>
 <p>
 Put your own Image datas in this directory.</br>
