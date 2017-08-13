@@ -13,7 +13,7 @@ from tensorflow.python.framework import dtypes
 
 class DataSet(object):
 
-    def __init__(self, who_am_i, datas, labels, class_len):
+    def __init__(self, who_am_i, datas, labels, class_len, height=0, width=0):
         self._who_am_i = who_am_i
 
         combined = list(zip(datas, labels))
@@ -29,8 +29,13 @@ class DataSet(object):
         else:
             dimension = form.shape[2]
 
-        self._height = form.shape[0]
-        self._width = form.shape[1]
+
+        if((height == 0) or (width == 0)):
+            self._height = form.shape[0]
+            self._width = form.shape[1]
+        else:
+            self._height = height
+            self._width = width
         self._dimension = dimension
 
     @property
@@ -50,6 +55,7 @@ class DataSet(object):
         for idx in range(batch_size):
             random.randint(0, len(self._datas)-1)
             tmp_img = scipy.misc.imread(self._datas[idx])
+            tmp_img = scipy.misc.imresize(tmp_img, (self._height, self._width))
             tmp_img = tmp_img.reshape(1, self._height, self._width, self._dimension)
 
             datas = np.append(datas, tmp_img, axis=0)
@@ -143,7 +149,7 @@ def dirlist_to_dataset(path=None, dirlist=None):
 
     return data_list, label_list, classes
 
-def load_dataset(path="./images"):
+def load_dataset(path="./images", img_h=0, img_w=0):
 
     split_data(path=path)
 
@@ -159,11 +165,11 @@ def load_dataset(path="./images"):
     if(len(dirlist) > 0):
         valid_datas, valid_labels, classes = dirlist_to_dataset(path="./valid", dirlist=dirlist)
 
-    train = DataSet(who_am_i="train", datas=train_datas, labels=train_labels, class_len=classes)
-    test = DataSet(who_am_i="test", datas=test_datas, labels=test_labels, class_len=classes)
-    validation = DataSet(who_am_i="valid", datas=valid_datas, labels=valid_labels, class_len=classes)
+    train = DataSet(who_am_i="train", datas=train_datas, labels=train_labels, class_len=classes, height=img_h, width=img_w)
+    test = DataSet(who_am_i="test", datas=test_datas, labels=test_labels, class_len=classes, height=img_h, width=img_w)
+    validation = DataSet(who_am_i="valid", datas=valid_datas, labels=valid_labels, class_len=classes, height=img_h, width=img_w)
 
     return base.Datasets(train=train, test=test, validation=validation), classes
 
 if __name__ == "__main__":
-    load_dataset(path="./images")
+    load_dataset(path="./images", img_h=28, img_w=28)

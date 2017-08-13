@@ -32,7 +32,7 @@ def request_dataset(path):
 
     print("\n***** Load dataset *****")
 
-    dataset, classes = dataset_loader.load_dataset(path=PACK_PATH+"/images")
+    dataset, classes = dataset_loader.load_dataset(path=PACK_PATH+"/images", img_h=28, img_w=28)
 
     num_train = dataset.train.amount
     num_test = dataset.test.amount
@@ -135,7 +135,7 @@ epochs = 1000
 epoch_step = epochs/10
 train_acc_list = []
 test_acc_list = []
-print("\n Training")
+print("\n Training... epochs: %d, batch size: %d\n" %(epochs, batch_size))
 
 for i in range(epochs):
     # dataset.train.next_batch returns images, labels
