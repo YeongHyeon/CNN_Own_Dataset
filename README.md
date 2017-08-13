@@ -17,6 +17,7 @@ class0, class1 ....
 
 <h2>train_custom_data.py</h2>
 <p>
-<strong>$python train_custom_data.py</strong></br>
+<strong>$python run_cnn.py</strong></br>
+<strong>$python run_cnn.py --help</strong> to help you.</br>
 It requires <a href="https://www.tensorflow.org/install/">TensorFlow</a>
 </p>
