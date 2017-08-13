@@ -1,3 +1,6 @@
+import developed
+developed.print_stamp()
+
 print("\n***** Load modules *****")
 import os, inspect, argparse
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
