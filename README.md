@@ -15,7 +15,7 @@ class0, class1 ....
 <h2>dataset_loader.py</h2>
 <p>It supports load your own data to Dataset.</p>
 
-<h2>train_custom_data.py</h2>
+<h2>run_cnn.py</h2>
 <p>
 <strong>$python run_cnn.py</strong></br>
 <strong>$python run_cnn.py --help</strong> to help you.</br>
