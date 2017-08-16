@@ -8,4 +8,4 @@ Developed by...
 
 def print_stamp():
     print(stamp)
-    print("https://github.com/YeongHyeon/CNN_for_audio")
+    print("https://github.com/YeongHyeon/CNN_Own_Dataset")
