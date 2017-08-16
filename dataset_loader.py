@@ -1,9 +1,6 @@
 import tensorflow as tf
-import librosa, librosa.display
-import matplotlib.pyplot as plt
 import numpy as np
-import os, sys, glob, shutil
-import math, random
+import os, sys, glob, shutil, random
 import scipy.misc
 
 import utility
