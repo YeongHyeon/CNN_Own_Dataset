@@ -1,8 +1,13 @@
 <h1>CNN Own Dataset</h1>
 
-<h2>run_cnn.py</h2>
+<h2>How to run?</h2>
 <p>
-<strong>$python run_cnn.py</strong></br>
-<strong>$python run_cnn.py --help</strong> to help you.</br>
-It requires <a href="https://www.tensorflow.org/install/">TensorFlow</a>
+Enter the commend on your terminal like this.</br>
+<strong>$ python run.py</strong></br>
+</p>
+
+</br></br>
+<p>
+First commit: May.24.2017</br>
+Developed by <a href="https://github.com/YeongHyeon"><strong>YeongHyeon Park</strong><a> (Korea)</br>
 </p>
