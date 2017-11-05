@@ -1,5 +1,7 @@
 <h1>CNN Own Dataset</h1>
 
+<p>Try your data instead of MNIST data in CNN tutorials.</p>
+
 <h2>How to run?</h2>
 <p>
 Enter the commend on your terminal like this.</br>
