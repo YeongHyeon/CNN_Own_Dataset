@@ -1,12 +1,14 @@
 import tensorflow as tf
 import numpy as np
-import os, sys, glob, shutil, random
+import os, sys, glob, shutil, random, inspect
 import scipy.misc
 
-import utility
+import source.utility as util
 
 from tensorflow.contrib.learn.python.learn.datasets import base
 from tensorflow.python.framework import dtypes
+
+PACK_PATH = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))+"/.."
 
 class DataSet(object):
 
@@ -63,25 +65,21 @@ class DataSet(object):
 
 def split_data(path=None):
 
-    if(not(os.path.exists(path))):
-        print("Path not exists \"" + str(path) + "\"")
-        return
-
-    utility.directory_check("./train")
-    utility.directory_check("./test")
-    utility.directory_check("./valid")
+    util.directory_check(PACK_PATH+"/train")
+    util.directory_check(PACK_PATH+"/test")
+    util.directory_check(PACK_PATH+"/valid")
 
     directories = []
     for dirname in os.listdir(path):
         directories.append(dirname)
 
     for di in directories:
-        if(not(os.path.exists("./train/"+di))):
+        if(not(os.path.exists(PACK_PATH+"/train/"+di))):
             os.mkdir("./train/"+di)
-        if(not(os.path.exists("./test/"+di))):
-            os.mkdir("./test/"+di)
-        if(not(os.path.exists("./valid/"+di))):
-            os.mkdir("./valid/"+di)
+        if(not(os.path.exists(PACK_PATH+"/test/"+di))):
+            os.mkdir(PACK_PATH+"/test/"+di)
+        if(not(os.path.exists(PACK_PATH+"/valid/"+di))):
+            os.mkdir(PACK_PATH+"/valid/"+di)
 
     extensions = [".jpg",".JPG",".jpeg",".JPEG"]
     for di in directories:
@@ -99,9 +97,9 @@ def split_data(path=None):
         test = files[tr_point:te_point]
         valid = files[te_point:va_point]
 
-        utility.copy_file_as_image(train, "./train/"+di)
-        utility.copy_file_as_image(test, "./test/"+di)
-        utility.copy_file_as_image(valid, "./valid/"+di)
+        util.copy_file_as_image(train, PACK_PATH+"/train/"+di)
+        util.copy_file_as_image(test, PACK_PATH+"/test/"+di)
+        util.copy_file_as_image(valid, PACK_PATH+"/valid/"+di)
 
 
 def path_to_dirlist(path=None):
@@ -146,19 +144,21 @@ def dirlist_to_dataset(path=None, dirlist=None):
 
     return data_list, label_list, classes
 
-def load_dataset(path="./images", img_h=0, img_w=0):
+def load_dataset(path=None, img_h=28, img_w=28):
+
+    print("\n***** Load dataset *****")
 
     split_data(path=path)
 
-    dirlist = path_to_dirlist(path="./train")
+    dirlist = path_to_dirlist(path=PACK_PATH+"/train")
     if(len(dirlist) > 0):
         train_datas, train_labels, classes = dirlist_to_dataset(path="./train", dirlist=dirlist)
 
-    dirlist = path_to_dirlist(path="./test")
+    dirlist = path_to_dirlist(path=PACK_PATH+"/test")
     if(len(dirlist) > 0):
         test_datas, test_labels, classes = dirlist_to_dataset(path="./test", dirlist=dirlist)
 
-    dirlist = path_to_dirlist(path="./valid")
+    dirlist = path_to_dirlist(path=PACK_PATH+"/valid")
     if(len(dirlist) > 0):
         valid_datas, valid_labels, classes = dirlist_to_dataset(path="./valid", dirlist=dirlist)
 
@@ -166,7 +166,9 @@ def load_dataset(path="./images", img_h=0, img_w=0):
     test = DataSet(who_am_i="test", datas=test_datas, labels=test_labels, class_len=classes, height=img_h, width=img_w)
     validation = DataSet(who_am_i="valid", datas=valid_datas, labels=valid_labels, class_len=classes, height=img_h, width=img_w)
 
-    return base.Datasets(train=train, test=test, validation=validation), classes
+    num_train = train.amount
+    num_test = test.amount
+    print(" Num of Train images : "+str(num_train))
+    print(" Num of Test images  : "+str(num_test))
 
-if __name__ == "__main__":
-    load_dataset(path="./images", img_h=28, img_w=28)
+    return base.Datasets(train=train, test=test, validation=validation), classes, min(num_train, num_test)
