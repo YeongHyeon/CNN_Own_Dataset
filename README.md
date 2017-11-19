@@ -6,6 +6,7 @@
 <p>
 Enter the commend on your terminal like this.</br>
 <strong>$ python run.py</strong></br>
+<strong>$ python run.py -h</strong> commend will help you</br>
 </p>
 
 </br></br>
