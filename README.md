@@ -8,22 +8,22 @@ Before run the source code
 You must prepare the dataset like following.  
 
 The root directory of your own dataset.
-├── Class 1
-│   ├── image1
-│   ├── image2
-│   ...
-│   └── imagen
-│
-├── Class 2
-│   ├── image1
-│   ├── image2
-│   ...
-│   └── imagen
-│
-├── Class 3
-...
-└── Class N
-
+├── Class 1  
+│   ├── image1  
+│   ├── image2  
+│   ...  
+│   └── imagen  
+│  
+├── Class 2  
+│   ├── image1  
+│   ├── image2  
+│   ...  
+│   └── imagen  
+│  
+├── Class 3  
+...  
+└── Class N  
+  
 ```
 $ python run.py
 
